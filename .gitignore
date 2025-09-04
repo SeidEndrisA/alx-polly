@@ -1,0 +1,46 @@
+# Node.js
+node_modules/
+dist/
+build/
+npm-debug.log*
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# System
+.DS_Store
+Thumbs.db
+
+# Android / Gradle
+.android/
+*.keystore
+*.gradle/
+
+# Logs
+*.log
+.cache/
+logs/
+pids/
+*.pid
+# Git internals
+.git/
+
+# Environment variables
+.env    
+
+# MacOS
+*.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+.DS_Store?
+.DocumentRevisions-V100
+.fseventsd
+.VolumeIcon.icns
+# Next.js
+.next/
+
