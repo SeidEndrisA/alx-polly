@@ -14,10 +14,7 @@ export default async function ProfilePage() {
   }
 
   const { data: polls, error } = await supabase
-    .from('polls')
-    .select('id, question')
-    .eq('created_by', user.id)
-    .order('created_at', { ascending: false });
+    .rpc('get_user_polls', { user_id_arg: user.id });
 
   return (
     <div className="container mx-auto max-w-4xl py-8">

@@ -57,7 +57,7 @@ CREATE POLICY "Allow authenticated users to create comments" ON comments FOR INS
 
 -- Function to increment vote count
 CREATE OR REPLACE FUNCTION increment_vote(option_id_arg UUID, poll_id_arg UUID, user_id_arg UUID)
-RETURNS void AS $$
+RETURNS void AS $
 BEGIN
   -- Check if the user has already voted
   IF EXISTS (SELECT 1 FROM user_votes WHERE user_id = user_id_arg AND poll_id = poll_id_arg) THEN
@@ -73,4 +73,31 @@ BEGIN
   INSERT INTO user_votes (user_id, poll_id, option_id)
   VALUES (user_id_arg, poll_id_arg, option_id_arg);
 END;
-$$ LANGUAGE plpgsql;
+$ LANGUAGE plpgsql;
+
+-- Function to get all polls with vote count and author username
+CREATE OR REPLACE FUNCTION get_all_polls()
+RETURNS TABLE (
+  id UUID,
+  question TEXT,
+  total_votes BIGINT,
+  author_username TEXT,
+  closing_date TIMESTAMPTZ
+) AS $
+BEGIN
+  RETURN QUERY
+  SELECT
+    p.id,
+    p.question,
+    (SELECT COUNT(*) FROM user_votes uv WHERE uv.poll_id = p.id) as total_votes,
+    pr.username as author_username,
+    p.closing_date
+  FROM
+    polls p
+  LEFT JOIN
+    profiles pr ON p.created_by = pr.id
+  ORDER BY
+    p.created_at DESC;
+END;
+$ LANGUAGE plpgsql;
+

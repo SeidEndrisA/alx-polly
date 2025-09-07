@@ -19,39 +19,31 @@ export default function PollsPage() {
 
   const fetchPolls = useCallback(async () => {
     setLoading(true);
-    let query = supabase
-      .from('polls')
-      .select(`
-        id,
-        question,
-        poll_options ( votes ),
-        profiles ( username )
-      `);
-
-    if (debouncedSearchTerm) {
-      query = query.ilike('question', `%${debouncedSearchTerm}%`);
-    }
-
-    if (statusFilter === 'open') {
-      query = query.or('closing_date.is.null,closing_date.gt.now()');
-    } else if (statusFilter === 'closed') {
-      query = query.lte('closing_date', 'now()');
-    }
-
-    query = query.order('created_at', { ascending: false });
-
-    const { data, error } = await query;
+    let { data, error } = await supabase.rpc('get_all_polls');
 
     if (error) {
       console.error('Error fetching polls:', error);
       setPolls([]);
     } else {
-      const processedData = data.map(poll => {
-        const total_votes = poll.poll_options.reduce((acc, opt) => acc + opt.votes, 0);
-        const author_username = poll.profiles?.username || null;
-        return { id: poll.id, question: poll.question, total_votes, author_username };
-      });
-      setPolls(processedData);
+      let filteredData = data;
+
+      if (debouncedSearchTerm) {
+        filteredData = filteredData.filter(poll => 
+          poll.question.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+        );
+      }
+
+      if (statusFilter === 'open') {
+        filteredData = filteredData.filter(poll => 
+          !poll.closing_date || new Date(poll.closing_date) > new Date()
+        );
+      } else if (statusFilter === 'closed') {
+        filteredData = filteredData.filter(poll => 
+          poll.closing_date && new Date(poll.closing_date) <= new Date()
+        );
+      }
+
+      setPolls(filteredData);
     }
     setLoading(false);
   }, [supabase, debouncedSearchTerm, statusFilter]);

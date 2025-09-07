@@ -19,7 +19,7 @@ import {
 import { toast } from 'sonner';
 import { Loader2, Trash2, Edit, Eye } from 'lucide-react';
 
-type Poll = { id: string; question: string };
+type Poll = { id: string; question: string; total_votes: number };
 
 export default function UserPollsList({ initialPolls }: { initialPolls: Poll[] }) {
   const { supabase } = useAuth();
@@ -71,39 +71,44 @@ export default function UserPollsList({ initialPolls }: { initialPolls: Poll[] }
           <CardHeader>
             <CardTitle>{poll.question}</CardTitle>
           </CardHeader>
-          <CardFooter className="flex justify-end gap-2">
-            <Link href={`/polls/${poll.id}`}>
-              <Button variant="outline" size="sm"><Eye className="mr-2 h-4 w-4" />View</Button>
-            </Link>
-            <Button variant="outline" size="sm" disabled>
-              <Edit className="mr-2 h-4 w-4" />Edit
-            </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive" size="sm" disabled={isDeleting === poll.id}>
-                  {isDeleting === poll.id ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <Trash2 className="mr-2 h-4 w-4" />
-                  )}
-                  Delete
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete your poll and all its data.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => handleDelete(poll.id)}>
-                    Continue
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+          <CardFooter className="flex justify-between items-center">
+            <div className="text-sm font-semibold text-muted-foreground">
+                {poll.total_votes} votes
+            </div>
+            <div className="flex gap-2">
+              <Link href={`/polls/${poll.id}`}>
+                <Button variant="outline" size="sm"><Eye className="mr-2 h-4 w-4" />View</Button>
+              </Link>
+              <Button variant="outline" size="sm" disabled>
+                <Edit className="mr-2 h-4 w-4" />Edit
+              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" size="sm" disabled={isDeleting === poll.id}>
+                    {isDeleting === poll.id ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="mr-2 h-4 w-4" />
+                    )}
+                    Delete
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete your poll and all its data.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => handleDelete(poll.id)}>
+                      Continue
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
           </CardFooter>
         </Card>
       ))}
