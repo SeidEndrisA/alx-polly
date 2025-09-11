@@ -10,7 +10,7 @@ export default async function ProfilePage() {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/auth/login');
+    redirect('/auth/signin');
   }
 
   const { data: polls, error } = await supabase

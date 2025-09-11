@@ -24,7 +24,7 @@ type PollFormValues = z.infer<typeof pollSchema>;
 
 export default function CreatePollForm() {
   const router = useRouter()
-  const { user, supabase } = useAuth()
+  const { supabase } = useAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<PollFormValues>({
@@ -42,6 +42,8 @@ export default function CreatePollForm() {
 
   const onSubmit = async (data: PollFormValues) => {
     setIsSubmitting(true)
+    const { data: { user } } = await supabase.auth.getUser()
+
     if (!user) {
       toast.error('You must be logged in to create a poll.')
       setIsSubmitting(false)

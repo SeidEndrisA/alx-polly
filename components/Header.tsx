@@ -14,9 +14,20 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ChevronDown } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { User } from '@supabase/supabase-js'
 
 export default function Header() {
-  const { user, signOut } = useAuth()
+  const { supabase, signOut } = useAuth()
+  const [user, setUser] = useState<User | null>(null)
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+    }
+    fetchUser()
+  }, [supabase])
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -50,10 +61,10 @@ export default function Header() {
             </DropdownMenu>
           ) : (
             <nav className="flex items-center space-x-2">
-              <Link href="/auth/login">
+              <Link href="/auth/signin">
                 <Button variant="ghost">Login</Button>
               </Link>
-              <Link href="/auth/register">
+              <Link href="/auth/signup">
                 <Button>Sign Up</Button>
               </Link>
             </nav>

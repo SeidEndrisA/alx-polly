@@ -23,6 +23,7 @@ export default function PollsPage() {
 
     if (error) {
       console.error('Error fetching polls:', error);
+      console.log('Data:', data);
       setPolls([]);
     } else {
       let filteredData = data;

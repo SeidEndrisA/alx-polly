@@ -1,8 +1,8 @@
 import './globals.css'
 import { AuthProvider } from '@/context/AuthProvider'
-import Header from '@/components/Header'
 import { ThemeProvider } from "@/context/ThemeProvider"
 import { Toaster } from 'sonner'
+import LayoutWrapper from '@/components/LayoutWrapper'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -15,8 +15,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           disableTransitionOnChange
         >
           <AuthProvider>
-            <Header />
-            <main>{children}</main>
+            <LayoutWrapper>
+              <main>{children}</main>
+            </LayoutWrapper>
             <Toaster />
           </AuthProvider>
         </ThemeProvider>

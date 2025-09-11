@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthProvider'
 import PollResultsChart from './PollResultsChart'
 import PollVotingForm from './PollVotingForm'
 import SharePoll from './SharePoll'
+import { User } from '@supabase/supabase-js'
 
 // Define types for our data
 type Option = { id: string; option_text: string; votes: number };
@@ -12,11 +13,20 @@ type Poll = { id: string; question: string; created_by: string };
 type InitialData = { poll: Poll; options: Option[] };
 
 export default function PollClient({ initialData, pollId }: { initialData: InitialData, pollId: string }) {
-  const { user, supabase } = useAuth();
+  const { supabase } = useAuth();
   const [poll, setPoll] = useState<Poll>(initialData.poll);
   const [options, setOptions] = useState<Option[]>(initialData.options);
   const [hasVoted, setHasVoted] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    fetchUser();
+  }, [supabase]);
 
   useEffect(() => {
     // Check if the user has already voted
@@ -80,7 +90,7 @@ export default function PollClient({ initialData, pollId }: { initialData: Initi
       {hasVoted ? (
         <PollResultsChart options={options} />
       ) : (
-        <PollVotingForm options={options} pollId={pollId} onVoteSuccess={handleVoteSuccess} />
+        <PollVotingForm options={options} pollId={pollId} onVoteSuccess={handleVoteSuccess} user={user} />
       )}
     </div>
   );
