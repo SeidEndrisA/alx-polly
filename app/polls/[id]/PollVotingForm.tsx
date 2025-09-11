@@ -1,12 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { useAuth } from '@/context/AuthProvider'
 import { Button } from '@/components/ui/button'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
+import { User } from '@supabase/supabase-js'
+import { useAuth } from '@/context/AuthProvider'
 
 type Option = { id: string; option_text: string; votes: number };
 
@@ -14,10 +15,11 @@ interface PollVotingFormProps {
   options: Option[];
   pollId: string;
   onVoteSuccess: () => void;
+  user: User | null;
 }
 
-export default function PollVotingForm({ options, pollId, onVoteSuccess }: PollVotingFormProps) {
-  const { user, supabase } = useAuth();
+export default function PollVotingForm({ options, pollId, onVoteSuccess, user }: PollVotingFormProps) {
+  const { supabase } = useAuth();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
