@@ -81,11 +81,11 @@ export default function SigninPage() {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isSubmitting} className="w-full">
+            <button type="submit" disabled={isSubmitting} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
               {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isSubmitting ? 'Signing In...' : 'Sign In'}
-            </Button>
-            <p className="text-center text-sm text-muted-foreground">
+            </button>
+            <p className="text-center text-sm">
               Don't have an account?{' '}
               <Link href="/auth/signup" className="underline">
                 Sign up

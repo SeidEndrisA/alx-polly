@@ -57,6 +57,7 @@ export default function PollsPage() {
     <div className="container mx-auto py-8">
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <h1 className="text-3xl font-bold tracking-tighter">All Polls</h1>
+<p className="text-muted-foreground">Here you can see all the polls created by our users. You can also create your own poll.</p>
         <div className="flex w-full md:w-auto items-center gap-2">
           <Input
             type="text"
