@@ -37,6 +37,8 @@ export default function Header() {
         </Link>
         <nav className="flex items-center space-x-6 text-sm font-medium">
           <Link href="/polls">Polls</Link>
+          <Link href="/profile">My Polls</Link>
+          <Link href="/polls/create">Create Poll</Link>
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-4">
           {user ? (

@@ -16,8 +16,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const router = useRouter()
 
   const signOut = async () => {
-    await supabase.auth.signOut()
-    router.push('/auth/signin')
+    try {
+      await supabase.auth.signOut()
+      router.push('/auth/signin')
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
   }
 
   return (
