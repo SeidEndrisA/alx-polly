@@ -6,14 +6,13 @@ CREATE TABLE profiles (
 );
 
 -- Function to create a new profile for a new user
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $
+RETURNS TRIGGER AS $function$
 BEGIN
   INSERT INTO public.profiles (id, username)
   VALUES (new.id, new.raw_user_meta_data->>'username');
   RETURN new;
 END;
-$ LANGUAGE plpgsql SECURITY DEFINER;
+$function$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Trigger to call the function when a new user is created
 CREATE TRIGGER on_auth_user_created

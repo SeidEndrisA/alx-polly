@@ -42,6 +42,10 @@ export default function PollsPage() {
     setLoading(true);
     let { data, error } = await supabase.rpc('get_all_polls');
 
+    console.log('Fetching polls with:', { searchTerm, statusFilter, debouncedSearchTerm });
+    console.log('Supabase RPC response - Data:', data);
+    console.log('Supabase RPC response - Error:', error);
+
     if (error) {
       console.error('Error fetching polls:', error);
       setPolls([]);
