@@ -1,26 +1,25 @@
 'use client'
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { Button } from '@/components/ui/button';
+import { User } from '@supabase/supabase-js';
 
 export default function HomePage() {
   const router = useRouter();
   const supabase = createClient();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const redirectUser = async () => {
+    const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      setTimeout(() => {
-        if (user) {
-          router.push('/polls');
-        } else {
-          router.push('/auth/signin');
-        }
-      }, 3000);
+      setUser(user);
+      setLoading(false);
     };
-    redirectUser();
-  }, [router, supabase]);
+    getUser();
+  }, [supabase]);
 
   return (
     <div className="container mx-auto flex flex-col items-center justify-center min-h-screen">
@@ -29,6 +28,15 @@ export default function HomePage() {
         The easiest way to create, share, and analyze polls. Get real-time results
         and engage your audience like never before.
       </p>
+      <div className="flex gap-4">
+        {loading ? (
+          <p>Loading...</p>
+        ) : user ? (
+          <Button onClick={() => router.push('/polls')}>View Polls</Button>
+        ) : (
+          <Button onClick={() => router.push('/auth/signin')}>Sign In</Button>
+        )}
+      </div>
     </div>
   );
 }
