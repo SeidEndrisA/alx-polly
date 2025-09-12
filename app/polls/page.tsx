@@ -85,10 +85,21 @@ export default function PollsPage() {
 
   return (
     <div className="container mx-auto py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tighter">{username ? `Welcome back, ${username} 👋` : 'All Polls'}</h1>
-        <p className="text-muted-foreground">{username ? 'Ready to vote or create a new poll today?' : 'Here you can see all the polls created by our users. You can also create your own poll.'}</p>
-      </div>
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-muted/40 rounded-xl mb-8">
+        <div className="container px-4 md:px-6 text-center">
+          <div className="max-w-3xl mx-auto space-y-4">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tighter leading-tight">
+              {username ? `Welcome back, ${username} 👋` : 'Explore Polls'}
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground">
+              {username ? 'Ready to vote or create a new poll today?' : 'Discover and create engaging polls on any topic.'}
+            </p>
+            <Link href="/polls/create">
+              <Button size="lg" className="mt-4">Create a New Poll</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <div className="flex w-full md:w-auto items-center gap-2">
           <Input
@@ -110,9 +121,6 @@ export default function PollsPage() {
               <SelectItem value="trending">Trending</SelectItem>
             </SelectContent>
           </Select>
-          <Link href="/polls/create">
-            <Button className="whitespace-nowrap">Create New Poll</Button>
-          </Link>
         </div>
       </div>
       {loading ? (

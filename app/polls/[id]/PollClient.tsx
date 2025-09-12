@@ -58,6 +58,7 @@ export default function PollClient({ initialData, pollId }: { initialData: Initi
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'poll_options', filter: `poll_id=eq.${pollId}` },
         (payload) => {
+          console.log('Realtime payload received:', payload);
           setOptions((currentOptions) =>
             currentOptions.map((option) =>
               option.id === payload.new.id ? { ...option, votes: payload.new.votes } : option
