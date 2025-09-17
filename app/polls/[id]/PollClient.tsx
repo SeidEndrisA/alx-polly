@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client';
 
+import Comments from './Comments';
 import PollResultsChart from './PollResultsChart'
 import PollVotingForm from './PollVotingForm'
 import SharePoll from './SharePoll'
@@ -75,6 +76,7 @@ export default function PollClient({ initialData, pollId }: { initialData: Initi
       ) : (
         <PollVotingForm options={initialData.options} pollId={pollId} onVoteSuccess={handleVoteSuccess} user={user} />
       )}
+      <Comments pollId={pollId} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, Legend } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getPollResults } from '@/lib/supabase/polls';
 import { useEffect, useState } from 'react';
@@ -61,11 +61,22 @@ export default function PollResultsChart({ pollId }: PollResultsChartProps) {
               />
               <Tooltip
                 cursor={{ fill: 'hsl(var(--accent))' }}
-                contentStyle={{
-                  background: 'hsl(var(--background))',
-                  border: '1px solid hsl(var(--border))'
+                content={({ payload, label }) => {
+                  if (payload && payload.length) {
+                    const option = payload[0].payload;
+                    const percentage = totalVotes > 0 ? ((option.votes.length / totalVotes) * 100).toFixed(2) : 0;
+                    return (
+                      <div className="bg-background border border-border p-2 rounded-lg shadow-lg">
+                        <p className="font-bold">{label}</p>
+                        <p>Votes: {option.votes.length}</p>
+                        <p>Percentage: {percentage}%</p>
+                      </div>
+                    );
+                  }
+                  return null;
                 }}
               />
+              <Legend />
               <Bar dataKey="votes.length" barSize={30} radius={[0, 8, 8, 0]}>
                 {sortedOptions.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
