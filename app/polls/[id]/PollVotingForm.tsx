@@ -7,7 +7,9 @@ import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 import { User } from '@supabase/supabase-js'
-import { useAuth } from '@/context/AuthProvider'
+import { castVote } from '@/lib/supabase/polls';
+
+
 
 type Option = { id: string; option_text: string; votes: number };
 
@@ -19,7 +21,7 @@ interface PollVotingFormProps {
 }
 
 export default function PollVotingForm({ options, pollId, onVoteSuccess, user }: PollVotingFormProps) {
-  const { supabase } = useAuth();
+  
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -35,11 +37,7 @@ export default function PollVotingForm({ options, pollId, onVoteSuccess, user }:
 
     setIsSubmitting(true);
 
-    const { error } = await supabase.rpc('increment_vote', { 
-      option_id_arg: selectedOption,
-      poll_id_arg: pollId,
-      user_id_arg: user.id 
-    });
+    const { error } = await castVote(pollId, selectedOption);
 
     if (error) {
       console.error('Error voting:', error);

@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useAuth } from '@/context/AuthProvider'
+import { createClient } from '@/lib/supabase/client';
+
 import PollResultsChart from './PollResultsChart'
 import PollVotingForm from './PollVotingForm'
 import SharePoll from './SharePoll'
@@ -13,9 +14,10 @@ type Poll = { id: string; question: string; created_by: string };
 type InitialData = { poll: Poll; options: Option[] };
 
 export default function PollClient({ initialData, pollId }: { initialData: InitialData, pollId: string }) {
-  const { supabase } = useAuth();
+  const supabase = createClient();
+  
   const [poll, setPoll] = useState<Poll>(initialData.poll);
-  const [options, setOptions] = useState<Option[]>(initialData.options);
+  
   const [hasVoted, setHasVoted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
@@ -51,27 +53,7 @@ export default function PollClient({ initialData, pollId }: { initialData: Initi
     checkUserVote();
   }, [user, pollId]);
 
-  useEffect(() => {
-    const channel = supabase
-      .channel(`poll_${pollId}`)
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'poll_options', filter: `poll_id=eq.${pollId}` },
-        (payload) => {
-          console.log('Realtime payload received:', payload);
-          setOptions((currentOptions) =>
-            currentOptions.map((option) =>
-              option.id === payload.new.id ? { ...option, votes: payload.new.votes } : option
-            )
-          );
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [pollId]);
+  
 
   const handleVoteSuccess = () => {
     setHasVoted(true);
@@ -89,9 +71,9 @@ export default function PollClient({ initialData, pollId }: { initialData: Initi
       </div>
 
       {hasVoted ? (
-        <PollResultsChart options={options} />
+        <PollResultsChart pollId={pollId} />
       ) : (
-        <PollVotingForm options={options} pollId={pollId} onVoteSuccess={handleVoteSuccess} user={user} />
+        <PollVotingForm options={initialData.options} pollId={pollId} onVoteSuccess={handleVoteSuccess} user={user} />
       )}
     </div>
   );
