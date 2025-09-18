@@ -39,13 +39,29 @@ ALTER TABLE poll_options ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_votes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
 
+-- Function to get user role
+CREATE OR REPLACE FUNCTION get_user_role(user_id_arg UUID)
+RETURNS TEXT AS $
+DECLARE
+  user_role_arg TEXT;
+BEGIN
+  SELECT role INTO user_role_arg FROM profiles WHERE id = user_id_arg;
+  RETURN user_role_arg;
+END;
+$ LANGUAGE plpgsql SECURITY DEFINER;
+
 -- Create policies for polls
 CREATE POLICY "Allow all to read polls" ON polls FOR SELECT USING (true);
-CREATE POLICY "Allow authenticated users to create polls" ON polls FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Allow admins to create polls" ON polls FOR INSERT WITH CHECK (get_user_role(auth.uid()) = 'admin');
+CREATE POLICY "Allow admins to update polls" ON polls FOR UPDATE USING (get_user_role(auth.uid()) = 'admin');
+CREATE POLICY "Allow admins to delete polls" ON polls FOR DELETE USING (get_user_role(auth.uid()) = 'admin');
+
 
 -- Create policies for poll_options
 CREATE POLICY "Allow all to read poll options" ON poll_options FOR SELECT USING (true);
-CREATE POLICY "Allow authenticated users to create poll options" ON poll_options FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Allow admins to create poll options" ON poll_options FOR INSERT WITH CHECK (get_user_role(auth.uid()) = 'admin');
+CREATE POLICY "Allow admins to update poll options" ON poll_options FOR UPDATE USING (get_user_role(auth.uid()) = 'admin');
+CREATE POLICY "Allow admins to delete poll options" ON poll_options FOR DELETE USING (get_user_role(auth.uid()) = 'admin');
 
 -- Create policies for user_votes
 CREATE POLICY "Allow all to read user_votes" ON user_votes FOR SELECT USING (true);

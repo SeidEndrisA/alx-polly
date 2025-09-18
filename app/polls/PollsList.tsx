@@ -37,7 +37,7 @@ export default function PollsList({ polls }: { polls: Poll[] }) {
             <div className="text-sm font-semibold text-muted-foreground">
               {poll.total_votes} votes
             </div>
-            <Link href={`/polls/${poll.id}`}>
+            <Link href={`/polls/${poll.id}`} aria-label={`View poll: ${poll.question}`}>
               <Button variant="outline">View Poll</Button>
             </Link>
           </CardFooter>

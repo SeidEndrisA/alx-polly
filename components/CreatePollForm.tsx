@@ -122,6 +122,7 @@ export default function CreatePollForm() {
                         variant="ghost"
                         size="icon"
                         onClick={() => remove(index)}
+                        aria-label={`Remove option ${index + 1}`}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

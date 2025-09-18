@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useDebounce } from 'use-debounce';
 import { useAuth } from '@/context/AuthProvider';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PollsList from './PollsList'; // Using the new PollsList component
@@ -101,26 +102,32 @@ export default function PollsPage() {
         </div>
       </section>
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-        <div className="flex w-full md:w-auto items-center gap-2">
-          <Input
-            type="text"
-            placeholder="Search polls..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full md:w-64"
-          />
-          <Select onValueChange={setStatusFilter} defaultValue={statusFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="open">Open</SelectItem>
-              <SelectItem value="closed">Closed</SelectItem>
-              <SelectItem value="my_polls">My Polls</SelectItem>
-              <SelectItem value="trending">Trending</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="flex w-full md:w-auto items-center gap-4">
+          <div className="grid w-full md:w-64 items-center gap-1.5">
+            <Label htmlFor="search">Search</Label>
+            <Input
+              type="text"
+              id="search"
+              placeholder="Search polls..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className="grid w-full md:w-48 items-center gap-1.5">
+            <Label htmlFor="filter">Filter</Label>
+            <Select onValueChange={setStatusFilter} defaultValue={statusFilter}>
+              <SelectTrigger id="filter">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="open">Open</SelectItem>
+                <SelectItem value="closed">Closed</SelectItem>
+                <SelectItem value="my_polls">My Polls</SelectItem>
+                <SelectItem value="trending">Trending</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
       {loading ? (
